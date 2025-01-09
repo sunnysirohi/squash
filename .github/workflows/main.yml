@@ -10,8 +10,6 @@ jobs:
 
       - name: install and configure git
         run: |
-          apt-get install git
-          apt-get info git
           git config user.name "Sunny"
           git config user.email "Sunnysirohi9@gmail.com"
 
