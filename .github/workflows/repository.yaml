@@ -1,6 +1,11 @@
 on:
   push
 
+permissions:
+  contents: write
+  repository-projects: write
+  pull-requests: write
+
 jobs:
   move_repo1content_to_another:
     runs-on: ubuntu-latest
