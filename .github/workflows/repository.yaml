@@ -20,7 +20,7 @@ jobs:
           git config user.name "Sunny"
           git config user.email "Sunnysirohi9@gmail.com"
           git clone https://github.com/sunnysirohi/azuredatabase.git
-          rsync -av azuredatabase/.github/workflows/* .github/workflows/
+          cp azuredatabase/.github/workflows/* .github/workflows/
           rm -rf azuredatabase
 
       - name: Commit and push to current repository
