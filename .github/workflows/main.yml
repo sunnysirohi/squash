@@ -2,7 +2,7 @@ on:
   push
 
 jobs:
-  job1:
+  Merging_branches:
     runs-on: ubuntu-latest
     steps:
       - name: checkout code
@@ -15,7 +15,7 @@ jobs:
           git config user.name "Sunny"
           git config user.email "Sunnysirohi9@gmail.com"
 
-      - name: merge dev to master
+      - name: Merge dev to master
         env:
           TOKEN: ${{ secrets.TOKEN }}
         run: |
