@@ -19,8 +19,7 @@ jobs:
         env:
           TOKEN: ${{ secrets.TOKEN }}
         run: |
-          #git fetch --all
-          #git fetch origin main
+          git fetch origin main
           git checkout main
           git merge origin/dev --no-ff --commit -m "auto merged dev branch to main"
           git push origin main
