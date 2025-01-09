@@ -16,6 +16,8 @@ jobs:
           git config user.email "Sunnysirohi9@gmail.com"
 
       - name: merge dev to master
+        env:
+          TOKEN: ${{ secrets.TOKEN }}
         run: |
           git fetch --all
           git fetch origin main
