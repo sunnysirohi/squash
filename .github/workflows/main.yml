@@ -1,0 +1,23 @@
+on:
+  push
+
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v3
+
+      - name: install and configure git
+        run: |
+          apt-get install git
+          apt-get info git
+          git config user.name "Sunny"
+          git config user.email "Sunnysirohi9@gmail.com"
+
+      - name: merge dev to master
+        run: |
+          git fetch origin main
+          git checkout main
+          git merge origin/dev --no-ff --comit -m "auto merged dev branch to main"
+          git push origin main
