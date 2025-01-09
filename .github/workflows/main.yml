@@ -1,0 +1,63 @@
+on:
+  push
+
+env:
+  sql_server: mysql12-dataserver
+  database_name: db1
+  resource-group: myresourcegroup5
+  location: centralus
+  admin-user: harry
+  admin-password: ret90@367
+  sql_command: "show databases"
+
+jobs:
+  cleanup_resources:
+    runs-on: ubuntu-latest
+
+    steps:     
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      
+      - name: Clean up resources
+        run: |
+          if az group exists --name ${{ env.resource-group }} --query "exists" -o tsv; then
+            echo "Resource group ${{ env.resource-group }} exists. Deleting..."
+            az group delete --name ${{ env.resource-group }} --yes
+          else
+            echo "Resource group ${{ env.resource-group }} does not exist."
+          fi
+          
+  deploy_resources:
+    runs-on: ubuntu-latest
+    needs: cleanup_resources
+    steps:     
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Create Resource Group
+        run: |
+          az group create --name ${{ env.resource-group }} --location ${{ env.location }}
+     
+      - name: Create Azure SQL Server
+        run: |
+          az sql server create --name ${{ env.sql_server }} --resource-group ${{ env.resource-group }} --location ${{ env.location }} --admin-user ${{ env.admin-user }} --admin-password ${{ env.admin-password }}
+          az sql server firewall-rule create --resource-group ${{ env.resource-group }} --server ${{ env.sql_server }} -n AllowYourIp --start-ip-address 0.0.0.0 --end-ip-address 0.0.0.0
+
+      - name: Create Azure SQL Database
+        run: |
+          az sql db create --name ${{ env.database_name }} --resource-group ${{ env.resource-group }} --server ${{ env.sql_server }} --sample-name AdventureWorksLT --edition GeneralPurpose --family Gen5 --capacity 2
+
+      - name: Connect to Azure SQL Database
+        run: |
+          #sqlcmd -S tcp:$sql_server.database.windows.net -d ${{ env.database_name }} -U ${{ env.admin-user }} -P ${{ env.admin-password}} -Q "${{ env.sql_command }}"
+          az sql db list --resource-group ${{ env.resource-group }} --server ${{ env.sql_server }}
