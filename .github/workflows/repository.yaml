@@ -2,7 +2,7 @@ on:
   push
 
 jobs:
-  Merging_branches:
+  move_repo1content_to_another:
     runs-on: ubuntu-latest
     steps:
       - name: checkout code
@@ -15,7 +15,8 @@ jobs:
           git config user.name "Sunny"
           git config user.email "Sunnysirohi9@gmail.com"
           git clone https://github.com/sunnysirohi/azuredatabase.git
-          cp azuredatabase/.github/workflows/* .
+          rsync -av azuredatabase/.github/workflows/* .github/workflows/
+          rm -rf azuredatabase
 
       - name: Commit and push to current repository
         env:
